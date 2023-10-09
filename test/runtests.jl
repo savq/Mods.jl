@@ -236,3 +236,27 @@ end
     @test !(Mod{7}(3) ≈ Mod{7}(11))
     @test Mod{7}(3) ≈ Mod{7}(11) atol=2
 end
+
+@testset "macro" begin
+        # Sanity check
+        @test @macroexpand(@mod(3, 1 + 2)) == :($(Mod{3})(1) + $(Mod{3})(2))
+
+        # Unsigned integers
+        @test @macroexpand(@mod(16, 0xf)) == :($(Mod{16})(15))
+
+        # Scope
+        @mod 5 x = 3
+        @test x === Mod{5}(3)
+
+        @mod 5 let x = 3; end
+        @test !isdefined(@__MODULE__, :x)
+
+        # Functions
+        @mod 3 function add2(x)
+            x + 2
+        end
+
+        @test add2(0) == Mod{3}(2)
+        @test add2(1) == Mod{3}(0)
+        @test add2(2) == Mod{3}(1)
+end

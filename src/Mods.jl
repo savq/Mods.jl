@@ -6,6 +6,7 @@ import Base: rand, conj, iszero, rtoldefault, isapprox
 export Mod, modulus, value, AbstractMod
 export is_invertible
 export CRT
+export @mod
 
 abstract type AbstractMod <: Number end
 
@@ -198,5 +199,6 @@ CRT(rs::Mod...) = CRT(BigInt, rs...)
 
 include("GaussMods.jl")
 include("iterate.jl")
+include("macros.jl")
 
 end # end of module Mods
